@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import br.com.rafaellima.demo.exception.EmailAlreadyExistsException;
+import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
 import br.com.rafaellima.demo.exception.UsuarioNotFoundException;
 
 @ControllerAdvice
@@ -45,6 +46,19 @@ public class GlobalExceptionHandler {
                                 ex.getMessage(),
                                 request.getDescription(false).replace("uri=", ""));
                 return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        }
+
+        @ExceptionHandler(UsuarioNaoAutenticadoException.class)
+        public ResponseEntity<ErrorResponse> handleUsuarioNaoAutenticadoException(
+                        UsuarioNaoAutenticadoException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(
+                                LocalDateTime.now(),
+                                HttpStatus.CONFLICT.value(),
+                                "Unauthorized",
+                                ex.getMessage(),
+                                request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
         }
 
         @ExceptionHandler({ BadCredentialsException.class, UsernameNotFoundException.class })
