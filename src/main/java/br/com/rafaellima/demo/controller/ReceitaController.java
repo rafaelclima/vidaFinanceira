@@ -78,7 +78,7 @@ public class ReceitaController {
   @Transactional
   public ResponseEntity<Void> deletarReceita(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
     receitaService.deletarReceita(id, usuario.getId());
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
 }
