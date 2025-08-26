@@ -5,15 +5,18 @@ import java.time.LocalDate;
 
 import br.com.rafaellima.demo.model.FonteReceita;
 import br.com.rafaellima.demo.model.StatusReceita;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public record ReceitaRequestDTO(
 
-    @NotNull(message = "O campo descricao é obrigatório") String descricao,
-    @NotNull(message = "O campo valor é obrigatório") BigDecimal valor,
-    @NotNull(message = "O campo data de recebimento é obrigadtório") LocalDate dataRecebimento,
-    @NotNull(message = "O campo status é obrigatório") StatusReceita status,
-    @NotNull(message = "O campo fonte da receita é obrigatório") FonteReceita fonte
+        @NotBlank(message = "O campo descricao é obrigatório") String descricao,
+
+        @NotBlank(message = "O campo valor é obrigatório") @PositiveOrZero(message = "Valor tem que ser maior ou igual a 0") BigDecimal valor,
+
+        @NotBlank(message = "O campo data de recebimento é obrigatório") LocalDate dataRecebimento,
+        @NotBlank(message = "O campo status é obrigatório") StatusReceita status,
+        @NotBlank(message = "O campo fonte da receita é obrigatório") FonteReceita fonte
 
 ) {
 
