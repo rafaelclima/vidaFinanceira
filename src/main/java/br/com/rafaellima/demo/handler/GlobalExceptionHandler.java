@@ -1,6 +1,7 @@
 package br.com.rafaellima.demo.handler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -8,12 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import br.com.rafaellima.demo.exception.EmailAlreadyExistsException;
+import br.com.rafaellima.demo.exception.ReceitaNaoEncontradaException;
 import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
 import br.com.rafaellima.demo.exception.UsuarioNotFoundException;
 
@@ -113,6 +116,32 @@ public class GlobalExceptionHandler {
                                 request.getDescription(false).replace("uri=", ""));
 
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(ReceitaNaoEncontradaException.class)
+        public ResponseEntity<ErrorResponse> handleReceitaNaoEncontradaException(
+                        UsuarioNotFoundException ex,
+                        WebRequest request) {
+
+                ErrorResponse errorResponse = new ErrorResponse(
+                                LocalDateTime.now(),
+                                HttpStatus.NOT_FOUND.value(),
+                                "Not Found",
+                                ex.getMessage(),
+                                request.getDescription(false).replace("uri=", ""));
+
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+                Map<String, String> errors = new HashMap<>();
+
+                for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+                        errors.put(error.getField(), error.getDefaultMessage());
+                }
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
 }
