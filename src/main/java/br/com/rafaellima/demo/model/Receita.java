@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import br.com.rafaellima.demo.dto.ReceitaRequestDTO;
+import br.com.rafaellima.demo.dto.ReceitaUpdateRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -62,6 +63,14 @@ public class Receita {
     this.status = receitaRequestDTO.status();
     this.fonte = receitaRequestDTO.fonte();
     this.usuario = usuario;
+  }
+
+  public void atualizarDados(ReceitaUpdateRequestDTO requestDTO) {
+    this.descricao = requestDTO.descricao() != null ? requestDTO.descricao() : this.descricao;
+    this.valor = requestDTO.valor() != null ? requestDTO.valor() : this.valor;
+    this.dataRecebimento = requestDTO.dataRecebimento() != null ? requestDTO.dataRecebimento() : this.dataRecebimento;
+    this.status = requestDTO.status() != null ? requestDTO.status() : this.status;
+    this.fonte = requestDTO.fonte() != null ? requestDTO.fonte() : this.fonte;
   }
 
 }

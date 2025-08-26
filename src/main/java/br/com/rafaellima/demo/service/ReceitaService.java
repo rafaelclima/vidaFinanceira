@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import br.com.rafaellima.demo.dto.ListarReceitasDTO;
 import br.com.rafaellima.demo.dto.ReceitaRequestDTO;
 import br.com.rafaellima.demo.dto.ReceitaResponseDTO;
+import br.com.rafaellima.demo.dto.ReceitaUpdateRequestDTO;
+import br.com.rafaellima.demo.exception.ReceitaNaoEncontradaException;
+import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
 import br.com.rafaellima.demo.exception.UsuarioNotFoundException;
 import br.com.rafaellima.demo.model.Receita;
 import br.com.rafaellima.demo.model.Usuario;
@@ -37,6 +40,28 @@ public class ReceitaService {
 
   public Optional<ReceitaResponseDTO> buscarReceitaPorId(Long id, Usuario usuario) {
     return receitasRepository.buscarPorId(usuario.getId(), id);
+  }
+
+  public ReceitaResponseDTO atualizarReceita(Long receitaId, ReceitaUpdateRequestDTO requestDTO, Long usuarioId) {
+    usuarioRepository.findById(usuarioId)
+        .orElseThrow(() -> new UsuarioNotFoundException(usuarioId));
+
+    Receita receita = receitasRepository.findById(receitaId)
+        .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + receitaId + " não encontrada!"));
+
+    if (!receita.getUsuario().getId().equals(usuarioId)) {
+      throw new UsuarioNaoAutenticadoException("Usuário não tem permissão para alterar esta receita");
+    }
+
+    receita.atualizarDados(requestDTO);
+
+    return new ReceitaResponseDTO(
+        receita.getId(),
+        receita.getDescricao(),
+        receita.getValor(),
+        receita.getDataRecebimento(),
+        receita.getStatus(),
+        receita.getFonte());
   }
 
   // Método para pegar o id do usuário autenticado.
