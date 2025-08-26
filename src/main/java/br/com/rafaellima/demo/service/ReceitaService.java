@@ -44,7 +44,7 @@ public class ReceitaService {
 
   public ReceitaResponseDTO atualizarReceita(Long receitaId, ReceitaUpdateRequestDTO requestDTO, Long usuarioId) {
     usuarioRepository.findById(usuarioId)
-        .orElseThrow(() -> new UsuarioNotFoundException(usuarioId));
+        .orElseThrow(() -> new UsuarioNotFoundException("Usuário de id " + usuarioId + " não encontrado."));
 
     Receita receita = receitasRepository.findById(receitaId)
         .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + receitaId + " não encontrada!"));
@@ -62,6 +62,20 @@ public class ReceitaService {
         receita.getDataRecebimento(),
         receita.getStatus(),
         receita.getFonte());
+  }
+
+  public void deletarReceita(Long receitaId, Long usuarioId) {
+    usuarioRepository.findById(usuarioId)
+        .orElseThrow(() -> new UsuarioNotFoundException("Usuário de id " + usuarioId + " não encontrado."));
+
+    Receita receita = receitasRepository.findById(receitaId)
+        .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + receitaId + " não encontrada!"));
+
+    if (!receita.getUsuario().getId().equals(usuarioId)) {
+      throw new UsuarioNaoAutenticadoException("Usário não permitido para esta ação.");
+    }
+
+    receitasRepository.delete(receita);
   }
 
   // Método para pegar o id do usuário autenticado.

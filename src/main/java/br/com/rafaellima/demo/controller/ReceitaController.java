@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,7 +72,13 @@ public class ReceitaController {
 
     ReceitaResponseDTO receitaatualizada = receitaService.atualizarReceita(id, requestDTO, usuario.getId());
     return ResponseEntity.ok(receitaatualizada);
+  }
 
+  @DeleteMapping("/{id}")
+  @Transactional
+  public ResponseEntity<Void> deletarReceita(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
+    receitaService.deletarReceita(id, usuario.getId());
+    return ResponseEntity.ok().build();
   }
 
 }
