@@ -1,43 +1,38 @@
 package br.com.rafaellima.demo.model;
 
-import java.util.Collection;
-import java.util.List;
-
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "Usuario")
 @Table(name = "usuarios")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Usuario implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Setter
   @Column(nullable = false)
   private String nome;
 
+  @Setter
   @Column(nullable = false)
   private String email;
 
+  @Setter
   @Column(nullable = false)
   private String senha;
 
@@ -82,16 +77,34 @@ public class Usuario implements UserDetails {
     return true; // usuário sempre está ativo
   }
 
-  public void setSenha(String senha) {
-    this.senha = senha;
-  }
+   @Override
+   public final boolean equals(Object o) {
 
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
+      if (this == o) return true;
+      if (o == null) return false;
+      Class<?> oEffectiveClass = o instanceof HibernateProxy ?
+            ((HibernateProxy) o)
+                  .getHibernateLazyInitializer()
+                  .getPersistentClass() :
+            o.getClass();
+      Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+            ((HibernateProxy) this)
+                  .getHibernateLazyInitializer()
+                  .getPersistentClass() :
+            this.getClass();
+      if (thisEffectiveClass != oEffectiveClass) return false;
+      Usuario usuario = (Usuario) o;
+      return getId() != null && Objects.equals(getId(), usuario.getId());
+   }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+   @Override
+   public final int hashCode() {
 
+      return this instanceof HibernateProxy ?
+            ((HibernateProxy) this)
+                  .getHibernateLazyInitializer()
+                  .getPersistentClass()
+                  .hashCode() :
+            getClass().hashCode();
+   }
 }
