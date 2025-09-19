@@ -1,6 +1,5 @@
 package br.com.rafaellima.demo.model;
 
-import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -14,6 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class Despesa {
@@ -49,17 +49,6 @@ public class Despesa {
   @JoinColumn(name = "usuario_id", nullable = false)
   @ToString.Exclude
   private Usuario usuario;
-
-   public Despesa(DespesaRequestDTO requestDTO, Usuario usuario) {
-      this.descricao = requestDTO.descricao();
-      this.valor = requestDTO.valor();
-      this.dataDespesa = requestDTO.dataDespesa();
-      this.dataVencimento = requestDTO.dataVencimento();
-      this.categoria = CategoriaDespesa.valueOf(requestDTO.categoria());
-      this.metodoPagamento = MetodoPagamento.valueOf(requestDTO.metodoPagamento());
-      this.status = StatusDespesa.valueOf(requestDTO.status());
-      this.usuario = usuario;
-   }
 
    @Override
    public final boolean equals(Object o) {
