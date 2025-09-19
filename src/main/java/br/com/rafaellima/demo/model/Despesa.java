@@ -1,5 +1,6 @@
 package br.com.rafaellima.demo.model;
 
+import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -49,6 +50,10 @@ public class Despesa {
   @JoinColumn(name = "usuario_id", nullable = false)
   @ToString.Exclude
   private Usuario usuario;
+
+   public Despesa(DespesaRequestDTO requestDTO, Usuario usuarioLogado) {
+
+   }
 
    @Override
    public final boolean equals(Object o) {

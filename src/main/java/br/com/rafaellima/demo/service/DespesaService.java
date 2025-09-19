@@ -6,14 +6,11 @@ import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
 import br.com.rafaellima.demo.model.Despesa;
 import br.com.rafaellima.demo.model.Usuario;
 import br.com.rafaellima.demo.repository.DespesasRepository;
-import br.com.rafaellima.demo.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

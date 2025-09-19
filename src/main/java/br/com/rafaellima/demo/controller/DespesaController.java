@@ -4,7 +4,6 @@ import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import br.com.rafaellima.demo.dto.DespesaResponseDTO;
 import br.com.rafaellima.demo.model.Usuario;
 import br.com.rafaellima.demo.service.DespesaService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
