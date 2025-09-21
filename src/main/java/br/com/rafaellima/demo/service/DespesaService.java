@@ -2,6 +2,8 @@ package br.com.rafaellima.demo.service;
 
 import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import br.com.rafaellima.demo.dto.DespesaResponseDTO;
+import br.com.rafaellima.demo.dto.ListarDespesasDTO;
+import br.com.rafaellima.demo.exception.DespesaNaoEncontradaException;
 import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
 import br.com.rafaellima.demo.model.Despesa;
 import br.com.rafaellima.demo.model.Usuario;
@@ -12,12 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class DespesaService {
    private final DespesasRepository despesasRepository;
 
-   public Page<DespesaResponseDTO> listar(Pageable paginacao, Usuario usuarioLogado) {
+   public Page<ListarDespesasDTO> listar(Pageable paginacao, Usuario usuarioLogado) {
       if (usuarioLogado == null) {
          throw new UsuarioNaoAutenticadoException("Usuário não autenticado! Por favor, faça login.");
       }
@@ -25,7 +29,6 @@ public class DespesaService {
       return despesasRepository.findAllBy(userId, paginacao);
    }
 
-   @Transactional
    public Despesa criar(DespesaRequestDTO requestDTO, Usuario usuarioLogado) {
       if (usuarioLogado == null) {
          throw new UsuarioNaoAutenticadoException("Usuário não autenticado! Por favor, faça login");
@@ -33,5 +36,20 @@ public class DespesaService {
       var despesa = new Despesa(requestDTO, usuarioLogado);
       despesasRepository.save(despesa);
       return despesa;
+   }
+
+   public ListarDespesasDTO detalhar(Long id, Usuario usuarioLogado) {
+
+      Despesa despesaBuscada = despesasRepository.findByIdAndUsuarioId(id,
+            usuarioLogado.getId()).orElseThrow(() -> new DespesaNaoEncontradaException(id));
+
+      return new ListarDespesasDTO(
+            despesaBuscada.getId(),
+            despesaBuscada.getDescricao(),
+            despesaBuscada.getValor(),
+            despesaBuscada.getDataVencimento(),
+            despesaBuscada.getStatus()
+      );
+
    }
 }
