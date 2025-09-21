@@ -2,9 +2,11 @@ package br.com.rafaellima.demo.controller;
 
 import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import br.com.rafaellima.demo.dto.DespesaResponseDTO;
+import br.com.rafaellima.demo.dto.DespesaUpdateRequestDTO;
 import br.com.rafaellima.demo.dto.ListarDespesasDTO;
 import br.com.rafaellima.demo.model.Usuario;
 import br.com.rafaellima.demo.service.DespesaService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,4 +52,29 @@ public class DespesaController {
                   .toUri();
       return ResponseEntity.created(location).build();
    }
+
+   @PutMapping("/{id}")
+   public ResponseEntity<DespesaResponseDTO> atualizarDespesa(@PathVariable Long id,
+                                                @RequestBody @Valid DespesaUpdateRequestDTO requestDTO,
+                                                @AuthenticationPrincipal Usuario usuarioLogado) {
+      var despesaAtualizada = despesaService.atualizar(id, requestDTO, usuarioLogado);
+
+      return ResponseEntity.ok(new DespesaResponseDTO(
+            despesaAtualizada.getId(),
+            despesaAtualizada.getDescricao(),
+            despesaAtualizada.getValor(),
+            despesaAtualizada.getDataVencimento(),
+            despesaAtualizada.getCategoria().name(),
+            despesaAtualizada.getMetodoPagamento().name(),
+            despesaAtualizada.getStatus().name()
+      ));
+   }
+
+   @DeleteMapping("/{id}")
+   public ResponseEntity<Void> deletarDespesa(@PathVariable Long id,
+                                              @AuthenticationPrincipal Usuario usuarioLogado) {
+      despesaService.deletar(id, usuarioLogado);
+      return ResponseEntity.noContent().build();
+   }
+
 }

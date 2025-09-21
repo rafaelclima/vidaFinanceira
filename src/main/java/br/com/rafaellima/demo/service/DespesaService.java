@@ -2,6 +2,7 @@ package br.com.rafaellima.demo.service;
 
 import br.com.rafaellima.demo.dto.DespesaRequestDTO;
 import br.com.rafaellima.demo.dto.DespesaResponseDTO;
+import br.com.rafaellima.demo.dto.DespesaUpdateRequestDTO;
 import br.com.rafaellima.demo.dto.ListarDespesasDTO;
 import br.com.rafaellima.demo.exception.DespesaNaoEncontradaException;
 import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
@@ -52,4 +53,23 @@ public class DespesaService {
       );
 
    }
+
+   @Transactional
+   public Despesa atualizar(Long id, DespesaUpdateRequestDTO requestDTO,
+                                            Usuario usuarioLogado) {
+      Despesa despesaBuscada = despesasRepository.findByIdAndUsuarioId(id,
+            usuarioLogado.getId()).orElseThrow(() -> new DespesaNaoEncontradaException(id));
+
+      despesaBuscada.atualizarDespesas(requestDTO);
+
+      return despesaBuscada;
+   }
+
+   @Transactional
+   public void deletar(Long id, Usuario usuarioLogado) {
+      Despesa despesaBuscada =
+            despesasRepository.findByIdAndUsuarioId(id, usuarioLogado.getId()).orElseThrow(() -> new DespesaNaoEncontradaException(id));
+      despesasRepository.delete(despesaBuscada);
+   }
+
 }

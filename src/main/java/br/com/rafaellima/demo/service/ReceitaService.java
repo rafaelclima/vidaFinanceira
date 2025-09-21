@@ -38,42 +38,25 @@ public class ReceitaService {
     return novaReceita;
   }
 
-  public Optional<ReceitaResponseDTO> buscarReceitaPorId(Long id, Usuario usuario) {
-    return receitasRepository.buscarPorId(usuario.getId(), id);
+  public Receita detalhar(Long id, Usuario usuario) {
+    return receitasRepository.findByIdAndUsuarioId(id, usuario.getId())
+        .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + id + " não encontrada!"));
   }
 
-  public ReceitaResponseDTO atualizarReceita(Long receitaId, ReceitaUpdateRequestDTO requestDTO, Long usuarioId) {
-    usuarioRepository.findById(usuarioId)
-        .orElseThrow(() -> new UsuarioNotFoundException("Usuário de id " + usuarioId + " não encontrado."));
-
-    Receita receita = receitasRepository.findById(receitaId)
+  @Transactional
+  public Receita atualizarReceita(Long receitaId, ReceitaUpdateRequestDTO requestDTO, Usuario usuario) {
+    Receita receita = receitasRepository.findByIdAndUsuarioId(receitaId, usuario.getId())
         .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + receitaId + " não encontrada!"));
-
-    if (!receita.getUsuario().getId().equals(usuarioId)) {
-      throw new UsuarioNaoAutenticadoException("Usuário não tem permissão para alterar esta receita");
-    }
 
     receita.atualizarDados(requestDTO);
 
-    return new ReceitaResponseDTO(
-        receita.getId(),
-        receita.getDescricao(),
-        receita.getValor(),
-        receita.getDataRecebimento(),
-        receita.getStatus(),
-        receita.getFonte());
+    return receita;
   }
 
-  public void deletarReceita(Long receitaId, Long usuarioId) {
-    usuarioRepository.findById(usuarioId)
-        .orElseThrow(() -> new UsuarioNotFoundException("Usuário de id " + usuarioId + " não encontrado."));
-
-    Receita receita = receitasRepository.findById(receitaId)
+  @Transactional
+  public void deletarReceita(Long receitaId, Usuario usuario) {
+    Receita receita = receitasRepository.findByIdAndUsuarioId(receitaId, usuario.getId())
         .orElseThrow(() -> new ReceitaNaoEncontradaException("Receita com id " + receitaId + " não encontrada!"));
-
-    if (!receita.getUsuario().getId().equals(usuarioId)) {
-      throw new UsuarioNaoAutenticadoException("Usário não permitido para esta ação.");
-    }
 
     receitasRepository.delete(receita);
   }

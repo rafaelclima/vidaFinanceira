@@ -1,6 +1,7 @@
 package br.com.rafaellima.demo.model;
 
 import br.com.rafaellima.demo.dto.DespesaRequestDTO;
+import br.com.rafaellima.demo.dto.DespesaUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -52,8 +53,21 @@ public class Despesa {
   private Usuario usuario;
 
    public Despesa(DespesaRequestDTO requestDTO, Usuario usuarioLogado) {
-
    }
+
+   public void atualizarDespesas(DespesaUpdateRequestDTO requestDTO) {
+      this.descricao = requestDTO.descricao() != null ? requestDTO.descricao() : this.descricao;
+      this.valor = requestDTO.valor() != null ? requestDTO.valor() : this.valor;
+      this.dataDespesa = requestDTO.dataDespesa() != null ? requestDTO.dataDespesa() :
+            this.dataDespesa;
+      this.dataVencimento = requestDTO.dataVencimento() != null ? requestDTO.dataVencimento() :
+            this.getDataVencimento();
+      this.categoria = requestDTO.categoria() != null ? requestDTO.categoria() : this.categoria;
+      this.metodoPagamento = requestDTO.metodoPagamento() != null ? requestDTO.metodoPagamento() :
+            this.metodoPagamento;
+      this.status = requestDTO.status() != null ? requestDTO.status() : this.status;
+   }
+
 
    @Override
    public final boolean equals(Object o) {

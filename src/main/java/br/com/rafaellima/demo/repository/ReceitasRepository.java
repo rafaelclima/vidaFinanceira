@@ -29,18 +29,6 @@ public interface ReceitasRepository extends JpaRepository<Receita, Long> {
       """)
   Page<ListarReceitasDTO> findAllBy(@Param("userId") Long userId, Pageable paginacao);
 
-  @Query("""
-          SELECT new br.com.rafaellima.demo.dto.ReceitaResponseDTO(
-              r.id,
-              r.descricao,
-              r.valor,
-              r.dataRecebimento,
-              r.status,
-              r.fonte
-          ) FROM Receita r
-          WHERE r.usuario.id = :userId
-          AND r.id = :receitaId
-      """)
-  Optional<ReceitaResponseDTO> buscarPorId(@Param("userId") Long userId, @Param("receitaId") Long receitaId);
+  Optional<Receita> findByIdAndUsuarioId(Long id, Long usuarioId);
 
 }

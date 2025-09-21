@@ -1,5 +1,6 @@
 package br.com.rafaellima.demo.controller;
 
+import br.com.rafaellima.demo.model.Receita;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -61,23 +62,35 @@ public class ReceitaController {
   @GetMapping("/{id}")
   public ResponseEntity<ReceitaResponseDTO> detalheReceita(@PathVariable Long id,
       @AuthenticationPrincipal Usuario usuarioLogado) {
-    return receitaService.buscarReceitaPorId(id, usuarioLogado).map(receita -> ResponseEntity.ok(receita))
-        .orElse(ResponseEntity.notFound().build());
+    var receita = receitaService.detalhar(id, usuarioLogado);
+    return ResponseEntity.ok(new ReceitaResponseDTO(
+         receita.getId(),
+         receita.getDescricao(),
+         receita.getValor(),
+         receita.getDataRecebimento(),
+         receita.getStatus(),
+         receita.getFonte()
+    ));
   }
 
   @PutMapping("/{id}")
-  @Transactional
   public ResponseEntity<ReceitaResponseDTO> atualizarReceita(@PathVariable Long id,
       @RequestBody ReceitaUpdateRequestDTO requestDTO, @AuthenticationPrincipal Usuario usuario) {
 
-    ReceitaResponseDTO receitaatualizada = receitaService.atualizarReceita(id, requestDTO, usuario.getId());
-    return ResponseEntity.ok(receitaatualizada);
+    Receita receitaAtualizada = receitaService.atualizarReceita(id, requestDTO, usuario);
+    return ResponseEntity.ok(new ReceitaResponseDTO(
+         receitaAtualizada.getId(),
+         receitaAtualizada.getDescricao(),
+         receitaAtualizada.getValor(),
+         receitaAtualizada.getDataRecebimento(),
+         receitaAtualizada.getStatus(),
+         receitaAtualizada.getFonte()
+    ));
   }
 
   @DeleteMapping("/{id}")
-  @Transactional
   public ResponseEntity<Void> deletarReceita(@PathVariable Long id, @AuthenticationPrincipal Usuario usuario) {
-    receitaService.deletarReceita(id, usuario.getId());
+    receitaService.deletarReceita(id, usuario);
     return ResponseEntity.noContent().build();
   }
 
