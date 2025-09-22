@@ -1,5 +1,6 @@
 package br.com.rafaellima.demo.repository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -30,5 +31,17 @@ public interface ReceitasRepository extends JpaRepository<Receita, Long> {
   Page<ListarReceitasDTO> findAllBy(@Param("userId") Long userId, Pageable paginacao);
 
   Optional<Receita> findByIdAndUsuarioId(Long id, Long usuarioId);
+
+  @Query("""
+        SELECT COALESCE(SUM(r.valor), 0.0)
+         FROM Receita r
+         WHERE r.usuario.id = :userId
+         AND r.dataRecebimento BETWEEN :dataInicio AND :dataFim
+        """)
+   BigDecimal calcularTotalReceitasNoPeriodo(
+         @Param("userId") Long userId,
+         @Param("dataInicio") java.time.LocalDate dataInicio,
+         @Param("dataFim") java.time.LocalDate dataFim
+   );
 
 }

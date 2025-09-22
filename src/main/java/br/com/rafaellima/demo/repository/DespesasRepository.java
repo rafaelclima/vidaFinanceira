@@ -1,6 +1,5 @@
 package br.com.rafaellima.demo.repository;
 
-import br.com.rafaellima.demo.dto.DespesaResponseDTO;
 import br.com.rafaellima.demo.dto.ListarDespesasDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.rafaellima.demo.model.Despesa;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
@@ -29,5 +29,17 @@ public interface DespesasRepository extends JpaRepository<Despesa, Long> {
    Page<ListarDespesasDTO> findAllBy(@Param("userId") Long userId, Pageable paginacao);
 
    Optional<Despesa> findByIdAndUsuarioId(Long despesaId, Long usuarioId);
+
+   @Query("""
+        SELECT COALESCE(SUM(d.valor), 0.0)
+         FROM Despesa d
+         WHERE d.usuario.id = :userId
+         AND d.dataDespesa BETWEEN :dataInicio AND :dataFim
+        """)
+   BigDecimal calcularTotalDespesasNoPeriodo(
+         @Param("userId") Long userId,
+         @Param("dataInicio") java.time.LocalDate dataInicio,
+         @Param("dataFim") java.time.LocalDate dataFim
+   );
 
 }
