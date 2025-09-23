@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import br.com.rafaellima.demo.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,11 +15,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-
-import br.com.rafaellima.demo.exception.EmailAlreadyExistsException;
-import br.com.rafaellima.demo.exception.ReceitaNaoEncontradaException;
-import br.com.rafaellima.demo.exception.UsuarioNaoAutenticadoException;
-import br.com.rafaellima.demo.exception.UsuarioNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -132,6 +128,22 @@ public class GlobalExceptionHandler {
 
                 return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
+
+         @ExceptionHandler(DataFuturaException.class)
+         public ResponseEntity<ErrorResponse> handleDataFuturaException(
+               DataFuturaException ex,
+               WebRequest request) {
+
+            ErrorResponse errorResponse = new ErrorResponse(
+                  LocalDateTime.now(),
+                  HttpStatus.BAD_REQUEST
+                        .value(),
+                  "Illegal Argument",
+                  ex.getMessage(),
+                  request.getDescription(false).replace("uri=", ""));
+
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+         }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {

@@ -1,5 +1,6 @@
 package br.com.rafaellima.demo.repository;
 
+import br.com.rafaellima.demo.dto.DespesaPorCategoriaDTO;
 import br.com.rafaellima.demo.dto.ListarDespesasDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import br.com.rafaellima.demo.model.Despesa;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -41,5 +44,20 @@ public interface DespesasRepository extends JpaRepository<Despesa, Long> {
          @Param("dataInicio") java.time.LocalDate dataInicio,
          @Param("dataFim") java.time.LocalDate dataFim
    );
+
+   @Query("""
+         SELECT new br.com.rafaellima.demo.dto.DespesaPorCategoriaDTO(
+             d.categoria,
+             COALESCE(SUM(d.valor), 0.0)
+         )
+         FROM Despesa d
+         WHERE d.usuario.id = :usuarioId
+         AND d.dataDespesa BETWEEN :dataInicio AND :dataFim
+         GROUP BY d.categoria
+         ORDER BY SUM(d.valor) DESC
+         """)
+   List<DespesaPorCategoriaDTO> calcularDespesasPorCategoria(Long usuarioId,
+                                                             LocalDate dataInicio,
+                                                             LocalDate dataFim);
 
 }

@@ -1,5 +1,8 @@
 package br.com.rafaellima.demo.model;
 
+import lombok.Getter;
+
+@Getter
 public enum CategoriaDespesa {
   ALIMENTACAO("Alimentação"),
   MORADIA("Moradia"),
@@ -15,10 +18,6 @@ public enum CategoriaDespesa {
 
   CategoriaDespesa(String nomeCategoria) {
     this.nomeCategoria = nomeCategoria;
-  }
-
-  public String getNomeCategoria() {
-    return nomeCategoria;
   }
 
 }
