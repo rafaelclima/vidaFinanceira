@@ -108,7 +108,7 @@ class RelatoriosServiceTest {
         assertNotNull(resultadoDTO);
         assertEquals(2, resultadoDTO.size());
         // Verifica o primeiro item da lista (o de maior valor, conforme nossa query)
-        assertEquals(br.com.rafaellima.demo.model.CategoriaDespesa.MORADIA, resultadoDTO.get(0).categoria());
-        assertEquals(new BigDecimal("1500.00"), resultadoDTO.get(0).totalGasto());
+        assertEquals(br.com.rafaellima.demo.model.CategoriaDespesa.MORADIA, resultadoDTO.getFirst().categoria());
+        assertEquals(new BigDecimal("1500.00"), resultadoDTO.getFirst().totalGasto());
     }
 }
