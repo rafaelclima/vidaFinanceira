@@ -26,16 +26,13 @@ public record DespesaRequestDTO(
 
       LocalDate dataVencimento,
 
-      @EnumValue(enumClass = CategoriaDespesa.class, message = "Categoria inválida.")
-      @NotBlank(message = "O campo categoria é obrigatório")
-      String categoria,
+      @NotNull(message = "O campo categoria é obrigatório")
+      CategoriaDespesa categoria,
 
-      @EnumValue(enumClass = MetodoPagamento.class, message = "Método de pagamento inválido.")
-      @NotBlank(message = "O campo método de pagamento é obrigatório")
-      String metodoPagamento,
+      @NotNull(message = "O campo método de pagamento é obrigatório")
+      MetodoPagamento metodoPagamento,
 
-      @EnumValue(enumClass = StatusDespesa.class, message = "Status inválido.")
-      @NotBlank(message = "O campo status é obrigatório")
-      String status
+      @NotNull(message = "O campo status é obrigatório")
+      StatusDespesa status
 ) {
 }

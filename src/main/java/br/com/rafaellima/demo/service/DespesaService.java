@@ -34,7 +34,16 @@ public class DespesaService {
       if (usuarioLogado == null) {
          throw new UsuarioNaoAutenticadoException("Usuário não autenticado! Por favor, faça login");
       }
-      var despesa = new Despesa(requestDTO, usuarioLogado);
+      var despesa = new Despesa();
+      despesa.setDescricao(requestDTO.descricao());
+      despesa.setValor(requestDTO.valor());
+      despesa.setDataDespesa(requestDTO.dataDespesa());
+      despesa.setDataVencimento(requestDTO.dataVencimento());
+      despesa.setCategoria(requestDTO.categoria());
+      despesa.setMetodoPagamento(requestDTO.metodoPagamento());
+      despesa.setStatus(requestDTO.status());
+      despesa.setUsuario(usuarioLogado);
+
       despesasRepository.save(despesa);
       return despesa;
    }

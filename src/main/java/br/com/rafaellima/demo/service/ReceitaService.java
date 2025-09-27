@@ -18,6 +18,7 @@ import br.com.rafaellima.demo.model.Usuario;
 import br.com.rafaellima.demo.repository.ReceitasRepository;
 import br.com.rafaellima.demo.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,15 @@ public class ReceitaService {
   public Receita cadastrarReceita(ReceitaRequestDTO receitaRequestDTO, Usuario usuario) {
     Usuario usuarioLogado = usuarioRepository.findById(usuario.getId())
         .orElseThrow(() -> new UsuarioNotFoundException(usuario.getId()));
-    Receita novaReceita = new Receita(receitaRequestDTO, usuarioLogado);
+    
+    Receita novaReceita = new Receita();
+    novaReceita.setDescricao(receitaRequestDTO.descricao());
+    novaReceita.setValor(receitaRequestDTO.valor());
+    novaReceita.setDataRecebimento(receitaRequestDTO.dataRecebimento());
+    novaReceita.setStatus(receitaRequestDTO.status());
+    novaReceita.setFonte(receitaRequestDTO.fonte());
+    novaReceita.setUsuario(usuarioLogado);
+
     receitasRepository.save(novaReceita);
     return novaReceita;
   }
