@@ -9,15 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.com.rafaellima.demo.service.AuthService;
-import br.com.rafaellima.demo.repository.DespesasRepository;
-import br.com.rafaellima.demo.repository.ReceitasRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import br.com.rafaellima.demo.model.Usuario;
+import br.com.rafaellima.demo.repository.DespesasRepository;
+import br.com.rafaellima.demo.repository.ReceitasRepository;
+import br.com.rafaellima.demo.service.AuthService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,7 +57,7 @@ class RelatoriosControllerTest {
         // Act & Assert
         mockMvc.perform(
                 get("/api/relatorios/{ano}/{mes}", ano, mes)
-                        .with(user(new br.com.rafaellima.demo.model.Usuario(usuarioId, "user", "user@test.com", "password", null, null)))
+                        .with(user(new Usuario(usuarioId, "user", "user@test.com", "password", null, null)))
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalReceitas").value(10000.00))
