@@ -64,4 +64,33 @@ class RelatoriosControllerTest {
                 .andExpect(jsonPath("$.totalDespesas").value(7500.00))
                 .andExpect(jsonPath("$.saldoFinal").value(2500.00));
     }
+
+    @Test
+    void gerarDespesaPorCategoria_ComDadosValidos_DeveRetornarStatus200EListaDeDTOs() throws Exception {
+        // Arrange
+        int ano = 2025;
+        int mes = 9;
+        long usuarioId = 1L;
+        LocalDate dataInicio = LocalDate.of(ano, mes, 1);
+        LocalDate dataFim = dataInicio.withDayOfMonth(dataInicio.lengthOfMonth());
+
+        var listaMock = java.util.List.of(
+                new br.com.rafaellima.demo.dto.DespesaPorCategoriaDTO(br.com.rafaellima.demo.model.CategoriaDespesa.MORADIA, new BigDecimal("1500.00")),
+                new br.com.rafaellima.demo.dto.DespesaPorCategoriaDTO(br.com.rafaellima.demo.model.CategoriaDespesa.ALIMENTACAO, new BigDecimal("750.50"))
+        );
+
+        when(despesasRepository.calcularDespesasPorCategoria(usuarioId, dataInicio, dataFim))
+                .thenReturn(listaMock);
+
+        // Act & Assert
+        mockMvc.perform(
+                get("/api/relatorios/despesas-por-categoria/{ano}/{mes}", ano, mes)
+                        .with(user(new Usuario(usuarioId, "user", "user@test.com", "password", null, null)))
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].categoria").value("MORADIA"))
+                .andExpect(jsonPath("$[0].totalGasto").value(1500.00))
+                .andExpect(jsonPath("$[1].categoria").value("ALIMENTACAO"))
+                .andExpect(jsonPath("$[1].totalGasto").value(750.50));
+    }
 }
