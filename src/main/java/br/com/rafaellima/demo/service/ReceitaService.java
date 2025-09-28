@@ -31,6 +31,7 @@ public class ReceitaService {
     return receitasRepository.findAllBy(usuario.getId(), paginacao);
   }
 
+  @Transactional
   public Receita cadastrarReceita(ReceitaRequestDTO receitaRequestDTO, Usuario usuario) {
     Usuario usuarioLogado = usuarioRepository.findById(usuario.getId())
         .orElseThrow(() -> new UsuarioNotFoundException(usuario.getId()));
