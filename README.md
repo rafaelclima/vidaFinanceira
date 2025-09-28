@@ -64,5 +64,3 @@ Após iniciar a aplicação, acesse:
 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
-
-*Este README foi gerado com a ajuda da IA do Gemini.*
